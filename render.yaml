@@ -1,0 +1,32 @@
+# Render service configuration
+# This file defines a web service for Render. It instructs Render to run
+# the server using `npm start` and uses /health as the health check path.
+# Render will consider this a web service and keep it running based on plan.
+services:
+  - type: web
+    name: genai-prototype-web
+    env: node
+    plan: free # change to appropriate paid plan if you need guaranteed always-on
+    branch: main
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    # Render expects the service to bind to $PORT; our server listens on PORT with host 0.0.0.0
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Add these in the Render Dashboard instead of committing them here
+      - key: SERVICE_ACCOUNT_PROJECT_ID
+        value: ""
+      - key: SERVICE_ACCOUNT_PRIVATE_KEY
+        value: ""
+      - key: SERVICE_ACCOUNT_CLIENT_EMAIL
+        value: ""
+      - key: VITE_GEMINI_API_KEY
+        value: ""
+      - key: VITE_FIREBASE_API_KEY
+        value: ""
+    healthCheckPath: /health
+    healthCheckIntervalSeconds: 60
+    autoDeploy: true
+    # Node version used for the environment. Render reads engines.node from package.json
+    # If you need a specific Node version, set it in package.json "engines": { "node": "20.x" }

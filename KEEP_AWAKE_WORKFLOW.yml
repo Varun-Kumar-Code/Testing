@@ -1,0 +1,21 @@
+# Copy this into .github/workflows/keep-awake.yml (or create that file in the GitHub UI)
+name: Keep Render service awake
+
+on:
+  schedule:
+    # Every 15 minutes (cron uses UTC). Adjust as needed.
+    - cron: '*/15 * * * *'
+  workflow_dispatch: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Render service URL
+        uses: actions/http-client@v1
+        with:
+          url: ${{ secrets.KEEP_AWAKE_URL }}
+          method: GET
+          timeout: 10
+        env:
+          KEEP_AWAKE_URL: ${{ secrets.KEEP_AWAKE_URL }}
